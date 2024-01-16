@@ -33,30 +33,21 @@ test_generator = test_datagen.flow_from_directory(
     shuffle=False
 )
 
-# Modeli tanımlayın
 model = Sequential()
 
-# EfficientNetB0 modelini ekleyin
 model.add(EfficientNetB0(include_top=False, weights='imagenet', input_shape=input_shape))
 
-# Flatten katmanını ekleyin
 model.add(Flatten())
 
-# Yoğun katmanı ekleyin
 model.add(Dense(256, activation='relu'))
 
-# Dropout katmanını ekleyin
 model.add(Dropout(0.5))
 
-# Çıkış katmanını ekleyin
 model.add(Dense(num_classes, activation='softmax'))
 
-# Modeli derleyin
 model.compile(optimizer=Adam(learning_rate=learning_rate), loss='categorical_crossentropy', metrics=['accuracy'])
 
-# Modeli eğitin
 history = model.fit(train_generator, epochs=epochs, validation_data=test_generator, callbacks=[EarlyStopping(patience=3)])
 
-# Modeli değerlendirin
 score = model.evaluate(test_generator)
 print(f'Test loss: {score[0]} / Test accuracy: {score[1]}')
