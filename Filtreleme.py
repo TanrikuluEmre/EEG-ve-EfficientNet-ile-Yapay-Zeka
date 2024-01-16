@@ -17,21 +17,17 @@ for eeg_file in eeg_files:
 
         for channel in range(num_channels):
             eeg_data = edf_file.readSignal(channel)
-
-            # 4-30 Hz aralığında bir band-pass filtre oluşturun
+            
             fs = edf_file.getSampleFrequency(channel)
             nyquist = 0.5 * fs
             low = 4 / nyquist
             high = 30 / nyquist
             b, a = scipy.signal.butter(4, [low, high], btype='band')
 
-            # Filtreleme işlemini uygulayın
             filtered_data = scipy.signal.lfilter(b, a, eeg_data)
 
-            # Spektrogram oluşturun
             plt.specgram(filtered_data, Fs=fs, NFFT=256, noverlap=128, cmap='viridis')
 
-            # Spektrogramu görselleştirin ve kaydedin
             plt.xlabel('Zaman (s)')
             plt.ylabel('Frekans (Hz)')
             plt.title(f'EEG Spektrogram - Dosya: {eeg_file} - Kanal {channel + 1}')
